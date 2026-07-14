@@ -5,4 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(kaleidoscope main.cpp
         lexer.cpp
-        ast.cpp)
+        ast.h
+        parser.cpp
+        token.h
+        lexer.h
+        parser.h)

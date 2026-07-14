@@ -2,22 +2,13 @@
 // Created by rasheed on 2026/07/14.
 //
 #include <string>
-enum Token {
-  tok_eof = -1,
 
-  // keywords
-  tok_def = -2,
-  tok_extern = -3,
+#include "lexer.h"
+#include "token.h"
 
-  // primary
-  tok_identifier = -4,
-  tok_number = -5,
-};
+namespace kaleidoscope {
 
-static std::string IdentifierStr;
-static double NumVal;
-
-static int get_tok() {
+int get_tok() {
   static char LastChar = ' ';
 
   while (std::isspace(LastChar))
@@ -68,3 +59,4 @@ static int get_tok() {
 
   return ThisChar;
 }
+} // namespace kaleidoscope

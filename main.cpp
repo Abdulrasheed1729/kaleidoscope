@@ -1,6 +1,18 @@
 #include <iostream>
 
+#include "parser.h"
+
+std::map<char, int> BinOpPrecedence;
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+  BinOpPrecedence['<'] = 10;
+  BinOpPrecedence['+'] = 20;
+  BinOpPrecedence['-'] = 30;
+  BinOpPrecedence['*'] = 40;
+
+  std::fprintf(stderr, "ready> ");
+  kaleidoscope::getNextTok();
+
+  kaleidoscope::MainLoop();
+  return 0;
 }

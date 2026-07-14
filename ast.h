@@ -2,10 +2,14 @@
 // Created by rasheed on 2026/07/14.
 //
 
+#ifndef KALEIDOSCOPE_AST_H
+#define KALEIDOSCOPE_AST_H
+
 #include <memory>
 #include <string>
 #include <vector>
 
+namespace kaleidoscope {
 class ExprAST {
 public:
   virtual ~ExprAST() = default;
@@ -65,3 +69,6 @@ public:
               std::unique_ptr<ExprAST> Body)
       : Proto(std::move(Proto)), Body(std::move(Body)) {}
 };
+} // namespace kaleidoscope
+
+#endif
