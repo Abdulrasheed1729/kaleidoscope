@@ -18,4 +18,5 @@ add_executable(kaleidoscope main.cpp
         parser.cpp
         token.h
         lexer.h
-        parser.h)
+        parser.h
+        ast.cpp)

@@ -17,9 +17,6 @@ extern std::string IdentifierStr;
 
 int getNextTok();
 
-std::unique_ptr<ExprAST> LogError(const char *Str);
-
-std::unique_ptr<ProtoTypeAST> LogErrorP(const char *Str);
 
 /// numberexpr ::= number
 static std::unique_ptr<ExprAST> ParseNumber();

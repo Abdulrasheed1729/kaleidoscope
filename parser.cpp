@@ -13,15 +13,6 @@ namespace kaleidoscope {
 
 int getNextTok() { return CurTok = get_tok(); }
 
-std::unique_ptr<ExprAST> LogError(const char *Str) {
-  std::fprintf(stderr, "Error: %s\n", Str);
-  return nullptr;
-}
-
-std::unique_ptr<ProtoTypeAST> LogErrorP(const char *Str) {
-  LogError(Str);
-  return nullptr;
-}
 
 std::unique_ptr<ExprAST> ParseNumber() {
   auto Result = std::make_unique<kaleidoscope::NumberExprAST>(NumVal);
