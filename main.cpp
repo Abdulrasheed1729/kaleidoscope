@@ -9,7 +9,7 @@
 
 std::map<char, int> BinOpPrecedence;
 std::unique_ptr<llvm::LLVMContext> TheContext;
-std::unique_ptr<llvm::IRBuilder<>> TheBuilder;
+std::unique_ptr<llvm::IRBuilder<>> Builder;
 std::unique_ptr<llvm::Module> TheModule;
 std::map<std::string, llvm::Value*> NamedValues;
 
