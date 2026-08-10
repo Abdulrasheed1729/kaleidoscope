@@ -12,6 +12,7 @@
 
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Verifier.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 
@@ -95,6 +96,7 @@ namespace kaleidoscope
         ProtoTypeAST(const std::string& Name, std::vector<std::string> Args) : Name(Name), Args(std::move(Args)) {}
 
         [[nodiscard]] const std::string& get_name() const { return Name; }
+        llvm::Function* codegen();
     };
 
     class FunctionAST
@@ -107,6 +109,8 @@ namespace kaleidoscope
             Proto(std::move(Proto)), Body(std::move(Body))
         {
         }
+
+        llvm::Function* codegen();
     };
 } // namespace kaleidoscope
 

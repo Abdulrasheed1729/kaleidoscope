@@ -3,6 +3,7 @@
 //
 
 #include "ast.h"
+#include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Value.h>
@@ -51,12 +52,12 @@ namespace kaleidoscope
         case '+':
             return Builder->CreateFAdd(L, R, "addtmp");
         case '-':
-            return Builder->CreateFAdd(L, R, "subtmp");
+            return Builder->CreateFSub(L, R, "subtmp");
         case '*':
-            return Builder->CreateFAdd(L, R, "multmp");
+            return Builder->CreateFMul(L, R, "multmp");
         case '<':
             L = Builder->CreateFCmpULT(L, R, "cmptmp");
-            return Builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*TheContext));
+            return Builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*TheContext), "booltmp");
         default:
             return LogErrorV("Invalid binary operator");
         }
@@ -81,5 +82,49 @@ namespace kaleidoscope
 
 
         return Builder->CreateCall(CalleeF, ArgsV, "calltmp");
+    }
+
+    llvm::Function* ProtoTypeAST::codegen()
+    {
+        std::vector<llvm::Type*> Doubles(Args.size(), llvm::Type::getDoubleTy(*TheContext));
+        llvm::FunctionType* FT = llvm::FunctionType::get(llvm::Type::getDoubleTy(*TheContext), Doubles, false);
+        llvm::Function* F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, Name, TheModule.get());
+
+        unsigned Idx = 0;
+        for (auto& Arg : F->args())
+            Arg.setName(Args[Idx++]);
+
+        return F;
+    }
+
+    llvm::Function* FunctionAST::codegen()
+    {
+        llvm::Function* TheFunction = TheModule->getFunction(Proto->get_name());
+
+        if (!TheFunction)
+            TheFunction = Proto->codegen();
+        if (!TheFunction)
+            return nullptr;
+
+        if (!TheFunction->empty())
+            return static_cast<llvm::Function*>(LogErrorV("Function cannot be redefined."));
+
+        llvm::BasicBlock* BB = llvm::BasicBlock::Create(*TheContext, "entry", TheFunction);
+        Builder->SetInsertPoint(BB);
+
+        NamedValues.clear();
+        for (auto& Arg : TheFunction->args())
+            NamedValues[std::string(Arg.getName())] = &Arg;
+
+        if (llvm::Value* RetVal = Body->codegen())
+        {
+            Builder->CreateRet(RetVal);
+            llvm::verifyFunction(*TheFunction);
+
+            return TheFunction;
+        }
+
+        TheFunction->eraseFromParent();
+        return nullptr;
     }
 } // namespace kaleidoscope
